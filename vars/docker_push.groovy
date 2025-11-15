@@ -12,4 +12,5 @@ def call (String projectName , String projectTag) {
 
                     // Push image
                     sh "docker push ${env.dockerHubUser}/${projectName}:${projectTag}"
+                 }
 }
