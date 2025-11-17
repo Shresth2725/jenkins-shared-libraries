@@ -1,16 +1,14 @@
 def call (String projectName , String projectTag) {
-                 withCredentials([usernamePassword(
-                    credentialsId: "dockerHubCred",
-                    usernameVariable: "dockerHubUser",
-                    passwordVariable: "dockerHubPass"
-                )]) {
-                    // Login
-                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+    withCredentials([usernamePassword(
+        credentialsId: "dockerHubCred",
+        usernameVariable: "dockerHubUser",
+        passwordVariable: "dockerHubPass"
+    )]) {
 
-                    // Tag image
-                    sh "docker tag notes-app:latest ${env.dockerHubUser}/${projectName}:${projectTag}"
+        // Login safely
+        sh "echo ${dockerHubPass} | docker login -u ${dockerHubUser} --password-stdin"
 
-                    // Push image
-                    sh "docker push ${env.dockerHubUser}/${projectName}:${projectTag}"
-                 }
+        // Push the image that was already built by docker_build()
+        sh "docker push ${dockerHubUser}/${projectName}:${projectTag}"
+    }
 }
